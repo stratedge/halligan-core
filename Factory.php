@@ -43,6 +43,16 @@ class Factory {
 		self::$_registered_locs[$class] = $loc;
 	}
 
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function reset()
+	{
+		self::$_registered_locs = array();
+		self::$_registered_objs = array();
+	}
+
 }
 
 /* End of file Factory.php */
