@@ -4,7 +4,7 @@ namespace Halligan;
 
 class Console {
 
-	public static function print($msg)
+	public static function write($msg = "")
 	{
 		fputs(STDOUT, $msg);
 	}
@@ -13,9 +13,18 @@ class Console {
 	//---------------------------------------------------------------------------------------------
 	
 
-	public static function printLine($msg)
+	public static function writeLine($msg = "")
 	{
 		fputs(STDOUT, $msg . "\r\n");
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function clear()
+	{
+		shell_exec("clear");
 	}
 
 }
