@@ -13,7 +13,7 @@ class URI {
 	public static function parseSegments()
 	{
 		//Get the correct URI based on the URL or the CLI appropriately
-		if(substr(PHP_SAPI, 0, 3) == 'cli')
+		if(self::isCLI())
 		{
 			$uri = implode("/", array_slice($_SERVER['argv'], 1));
 		}
@@ -82,6 +82,15 @@ class URI {
 
 		//Otherwise exclude the first segment as it was used as the method
 		return array_slice(static::$segments, 2);
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function isCLI()
+	{
+		return strtolower(substr(PHP_SAPI, 0, 3)) == 'cli';
 	}
 
 }

@@ -8,6 +8,49 @@ class Error {
 
 	public static function renderException($exception, $show_trace = TRUE)
 	{
+		if(URI::isCLI())
+		{
+			self::renderErrorForConsole($exception, $show_trace);
+		}
+		else
+		{
+			self::renderErrorForWeb($exception, $show_trace);
+		}
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function renderError($code, $error, $file, $line)
+	{
+		$exception = new ErrorException($error, $code, 0, $file, $line);
+
+		static::renderException($exception);
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function renderShutdown()
+	{
+		$error = error_get_last();
+
+		if(!is_null($error))
+		{
+			extract($error, EXTR_SKIP);
+
+			static::renderException(new ErrorException($message, $type, 0, $file, $line), FALSE);
+		}
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function renderErrorForWeb($exception, $show_trace = TRUE)
+	{
 		$response = "<html>
 			<h2>Unhandled Exception</h2>
 			<h3>Message:</h3>
@@ -19,16 +62,25 @@ class Error {
 		{
 			$trace = '';
 
+			$trace_str = "
+				<tr>
+					<td><pre>%d</pre></td>
+					<td><pre>%s</pre></td>
+					<td><pre>%s</pre></td>
+					<td><pre>%s</pre></td>
+					<td><pre>%s</pre></td>
+				</tr>";
+
 			foreach($exception->getTrace() as $key => $item)
 			{
-				$trace .= "
-					<tr>
-						<td><pre>" . ($key+1) . "</pre></td>
-						<td><pre>" . (isset($item['line']) ? $item['line'] : '---') . "</pre></td>
-						<td><pre>" . (isset($item['class']) ? $item['class'] : '---') . "</pre></td>
-						<td><pre>" . (isset($item['function']) ? $item['function'] . "()" : '---') . "</pre></td>
-						<td><pre>" . (isset($item['file']) ? $item['file'] : '---') . "</pre></td>
-					</tr>";
+				$trace .= sprintf(
+					$trace_str,
+					$key + 1,
+					isset($item['line']) ? $item['line'] : '---',
+					isset($item['class']) ? $item['class'] : '---',
+					isset($item['function']) ? $item['function'] . "()" : '---',
+					isset($item['file']) ? $item['file'] : '---'
+				);
 			}
 
 			$response .= "<h3>Trace:</h3>
@@ -54,23 +106,34 @@ class Error {
 		exit(ob_get_clean());
 	}
 
-	public static function renderError($code, $error, $file, $line)
+	public static function renderErrorForConsole($exception, $show_trace = TRUE)
 	{
-		$exception = new ErrorException($error, $code, 0, $file, $line);
+		Console::writeLine("Unhandled Exception");
+		Console::writeLine(sprintf("Message: %s", $exception->getMessage()));
+		Console::writeLine(sprintf("Location: %s on line %d", $exception->getFile(), $exception->getLine()));
+		Console::writeLine();
 
-		static::renderException($exception);
-	}
-
-	public static function renderShutdown()
-	{
-		$error = error_get_last();
-
-		if(!is_null($error))
+		if($show_trace)
 		{
-			extract($error, EXTR_SKIP);
+			$headers = array("#", "Line", "Class", "Function", "File");
 
-			static::renderException(new ErrorException($message, $type, 0, $file, $line), FALSE);
+			$trace = array();
+			
+			foreach($exception->getTrace() as $key => $item)
+			{
+				$trace[] = array(
+					$key + 1,
+					isset($item["line"]) ? $item["line"] : "---",
+					isset($item["class"]) ? $item["class"] : "---",
+					isset($item["function"]) ? $item["function"] : "---",
+					isset($item["file"]) ? $item["file"] : "---"
+				);
+			}
+
+			Console::writeTable($trace, $headers);
 		}
+
+		exit();
 	}
 
 }
