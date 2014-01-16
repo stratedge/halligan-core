@@ -53,6 +53,15 @@ class Factory {
 		self::$_registered_objs = array();
 	}
 
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function registerMock($class, $mock_obj)
+	{
+		self::registerObjectForClass($class, $mock_obj);
+	}
+
 }
 
 /* End of file Factory.php */

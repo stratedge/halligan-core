@@ -51,6 +51,9 @@ class Error {
 
 	public static function renderErrorForWeb($exception, $show_trace = TRUE)
 	{
+		Response::setStatusHeader(500);
+		Response::sendHeaders();
+
 		$response = "<html>
 			<h2>Unhandled Exception</h2>
 			<h3>Message:</h3>
