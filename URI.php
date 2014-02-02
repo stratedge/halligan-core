@@ -58,11 +58,11 @@ class URI {
 		//If we have a first URI segment and it's not an integer, use it as our method name
 		if(isset(static::$segments[1]) && !empty(static::$segments[1]) && !is_int_val(static::$segments[1]))
 		{
-			$method = static::$segments[1];
+			return $method = static::$segments[1];
 
-			$pieces = explode("_", $method);
+			// $pieces = explode("_", $method);
 
-			$pieces = array_map(function($val) { return ucfirst($val); }, $pieces);
+			// $pieces = array_map(function($val) { return ucfirst($val); }, $pieces);
 
 			return lcfirst(implode($pieces));
 		}
@@ -91,6 +91,15 @@ class URI {
 	public static function isCLI()
 	{
 		return strtolower(substr(PHP_SAPI, 0, 3)) == 'cli';
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function getRequestMethod($to_lowercase = FALSE)
+	{
+		return $to_lowercase ? strtolower($_SERVER["REQUEST_METHOD"]) : $_SERVER["REQUEST_METHOD"];
 	}
 
 }
