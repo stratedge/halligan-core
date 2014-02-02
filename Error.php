@@ -79,10 +79,10 @@ class Error {
 				$trace .= sprintf(
 					$trace_str,
 					$key + 1,
-					isset($item['line']) ? $item['line'] : '---',
 					isset($item['class']) ? $item['class'] : '---',
 					isset($item['function']) ? $item['function'] . "()" : '---',
-					isset($item['file']) ? $item['file'] : '---'
+					isset($item['file']) ? $item['file'] : '---',
+					isset($item['line']) ? $item['line'] : '---'
 				);
 			}
 
@@ -90,10 +90,10 @@ class Error {
 				<table>
 					<tr>
 						<th style=\"border-bottom: 1px solid black;\">#</th>
-						<th style=\"border-bottom: 1px solid black;\">Line</th>
 						<th style=\"border-bottom: 1px solid black;\">Class</th>
 						<th style=\"border-bottom: 1px solid black;\">Function</th>
 						<th style=\"border-bottom: 1px solid black;\">File</th>
+						<th style=\"border-bottom: 1px solid black;\">Line</th>
 					</tr>" . $trace . "
 				</table>";
 		}
