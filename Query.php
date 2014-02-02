@@ -356,7 +356,7 @@ class Query {
 	protected function _buildUpdate($table)
 	{
 		$this->_table = $table ?: $this->_table;
-		return "UPDATE " . $this->_table;
+		return "UPDATE " . $this->_addBackticks($this->_table);
 	}
 
 
