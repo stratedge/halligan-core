@@ -441,7 +441,7 @@ class Query {
 
 		$values = $this->_buildValues();
 
-		$parts = array_filter(array($open, $this->_table, $columns, "VALUES", $values));
+		$parts = array_filter(array($open, $this->_addBackticks($this->_table), $columns, "VALUES", $values));
 
 		$sql = implode(" " , $parts);
 
