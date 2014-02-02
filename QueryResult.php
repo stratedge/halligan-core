@@ -92,6 +92,8 @@ class QueryResult {
 
 			$row = $this->_result->fetch($style);
 
+			if(empty($row)) return NULL;
+
 			$row = array_values($row);
 
 			return isset($row[0]) ? $row[0] : NULL;
