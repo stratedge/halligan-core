@@ -196,9 +196,19 @@ if(function_exists("redirect") === FALSE)
 
 if(function_exists("is_int_val") === FALSE)
 {
-	function is_int_val($val)
+	function is_int_val($val, $greater_than_zero = FALSE)
 	{
-		return is_numeric($val) && intval($val) == $val;
+		if(is_numeric($val) && intval($val) == $val)
+		{
+			if($greater_than_zero)
+			{
+				return intval($val) > 0;
+			}
+
+			return TRUE;
+		}
+
+		return FALSE;
 	}
 }
 
