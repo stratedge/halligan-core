@@ -118,7 +118,7 @@ class Error {
 
 		if($show_trace)
 		{
-			$headers = array("#", "Line", "Class", "Function", "File");
+			$headers = array("#", "Class", "Function", "File", "Line");
 
 			$trace = array();
 			
@@ -126,10 +126,10 @@ class Error {
 			{
 				$trace[] = array(
 					$key + 1,
-					isset($item["line"]) ? $item["line"] : "---",
 					isset($item["class"]) ? $item["class"] : "---",
 					isset($item["function"]) ? $item["function"] : "---",
-					isset($item["file"]) ? $item["file"] : "---"
+					isset($item["file"]) ? $item["file"] : "---",
+					isset($item["line"]) ? $item["line"] : "---"
 				);
 			}
 
