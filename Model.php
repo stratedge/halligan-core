@@ -12,9 +12,11 @@ class Model {
 	}
 
 
-	public function query()
+	public function query($sql = NULL)
 	{
-		return new Query();
+		$q = Factory::create("Query");
+
+		return is_null($sql) ? $q : $q->query($sql);
 	}
 
 }
