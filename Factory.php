@@ -29,15 +29,6 @@ class Factory {
 	//---------------------------------------------------------------------------------------------
 	
 
-	public static function registerObjectForClass($class, $obj)
-	{
-		if(is_object($obj)) self::$_registered_objs[$class] = $obj;
-	}
-
-
-	//---------------------------------------------------------------------------------------------
-	
-
 	public static function registerLocationForClass($class, $loc)
 	{
 		self::$_registered_locs[$class] = $loc;
@@ -60,6 +51,15 @@ class Factory {
 	public static function registerMock($class, $mock_obj)
 	{
 		self::registerObjectForClass($class, $mock_obj);
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function callStatic($class, $method, $params = array())
+	{
+		return call_user_func_array(array(self::create($class), $method), $params);
 	}
 
 }
