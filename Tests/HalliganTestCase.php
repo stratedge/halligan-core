@@ -4,7 +4,8 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 
 	protected function setUp()
 	{
-		//PDOStatement_Stub::reset();
+		PDOStatement_Stub::reset();
+		Factory::reset();
 	}
 
 }
