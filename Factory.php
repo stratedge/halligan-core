@@ -50,7 +50,7 @@ class Factory {
 
 	public static function registerMock($class, $mock_obj)
 	{
-		self::registerObjectForClass($class, $mock_obj);
+		if(is_object($mock_obj)) self::$_registered_objs[$class] = $mock_obj;
 	}
 
 
