@@ -140,6 +140,48 @@ class Query {
 
 
 	//---------------------------------------------------------------------------------------------
+	
+
+	public function whereIsNull($column)
+	{
+		if(is_array($column))
+		{
+			foreach($column as $col)
+			{
+				$this->whereIsNull($col);
+			}
+		}
+		else
+		{
+			$this->_addWhere($column, NULL, 'IS NULL');
+		}
+
+		return $this;
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function whereIsNotNull($column)
+	{
+		if(is_array($column))
+		{
+			foreach($column as $col)
+			{
+				$this->whereIsNotNull($col);
+			}
+		}
+		else
+		{
+			$this->_addWhere($column, NULL, 'IS NOT NULL');
+		}
+		
+		return $this;
+	}
+
+
+	//---------------------------------------------------------------------------------------------
 
 
 	protected function _addWhere($column, $value, $cond)
@@ -151,6 +193,11 @@ class Query {
 		{
 			case 'IN':
 				return $this->_wheres[] =  sprintf("%s %s (%s)", $column, $cond, implode(",", $value));
+				break;
+
+			case 'IS NULL':
+			case 'IS NOT NULL':
+				return $this->_wheres[] = sprintf("%s %s", $column, $cond);
 				break;
 
 			default:
