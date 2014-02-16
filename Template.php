@@ -7,6 +7,10 @@ class Template {
 	protected $_template = NULL;
 	protected $_data = array();
 
+	protected $_if_functions = array(
+		'isset'
+	);
+
 
 	//---------------------------------------------------------------------------------------------
 
@@ -117,6 +121,11 @@ class Template {
 				return $this->_parseEchoTag($matches[2], strpos($matches[1], ":escape") !== FALSE);
 				break;
 
+			case 'json:':
+				if(!isset($matches[2])) return NULL;
+				return $this->_parseJSON($matches[2]);
+				break;
+
 			case 'if:':
 				if(!isset($matches[2])) return NULL;
 				$condition = $this->_parseIfCondition($matches[2]);
@@ -178,7 +187,7 @@ class Template {
 
 	public function parseTags($content)
 	{
-		return preg_replace_callback('/\{(\/if|if:echo:escape:|if:echo:|if:var:escape:|if:var:|if:|var:escape:|var:|echo:escape:|echo:|\/foreach|foreach:|template:)([^\}]+)*\}/', "self::_parseTag", $content);
+		return preg_replace_callback('/\{(\/if|if:echo:escape:|if:echo:|if:var:escape:|if:var:|if:|var:escape:|var:|echo:escape:|echo:|\/foreach|foreach:|template:|json:)([^\}]+)*\}/', "self::_parseTag", $content);
 	}
 
 
@@ -262,6 +271,7 @@ class Template {
 
 	protected function _parseIfVariable($matches)
 	{
+		if(in_array($matches[0], $this->_if_functions)) return $matches[0];
 		return preg_match('/^[\"\'][\w]+[\"\']$/', $matches[0]) ? $matches[0] : $this->_parseDotNotation($matches[0]);
 	}
 
@@ -321,6 +331,19 @@ class Template {
 		$tag = sprintf("%secho %s;", $pre, $post);
 
 		return $incl_php ? sprintf("<?php %s ?>", $tag) : $tag;
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	protected function _parseJSON($var)
+	{
+		if(!$this->_validVariableName($var)) return;
+
+		$var = $this->_parseDotNotation($var);
+
+		return sprintf("<?php if(isset(%s)) echo json_encode(%s); ?>", $var, $var);
 	}
 
 }
