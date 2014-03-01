@@ -146,12 +146,12 @@ class Template {
 
 			case 'foreach:':
 				$parts = explode(":", $matches[2]);
-				if(count($parts) < 3) return sprintf('<?php foreach(%s as $%s): ?>', $this->_parseDotNotation($parts[0]), $parts[1]);
-				if(count($parts) >= 3) return sprintf('<?php foreach(%s as $%s => $%s): ?>', $this->_parseDotNotation($parts[0]), $parts[1], $parts[2]);
+				if(count($parts) < 3) return sprintf('<?php if(isset(%s)): foreach(%s as $%s): ?>', $this->_parseDotNotation($parts[0]), $this->_parseDotNotation($parts[0]), $parts[1]);
+				if(count($parts) >= 3) return sprintf('<?php if(isset(%s)): foreach(%s as $%s => $%s): ?>', $this->_parseDotNotation($parts[0]), $this->_parseDotNotation($parts[0]), $parts[1], $parts[2]);
 				break;
 
 			case '/foreach':
-				return '<?php endforeach; ?>';
+				return '<?php endforeach; endif; ?>';
 				break;
 
 			case 'template:':
