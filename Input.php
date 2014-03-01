@@ -8,7 +8,7 @@ class Input {
 	{
 		if(isset($_POST[$key]) && (!empty($_POST[$key]) || $_POST[$key] === "0"))
 		{
-			return $trim ? trim($_POST[$key]) : $_POST[$key];
+			return $trim && is_string($_POST[$key]) ? trim($_POST[$key]) : $_POST[$key];
 		}
 
 		return NULL;
