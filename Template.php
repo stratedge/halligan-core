@@ -144,6 +144,10 @@ class Template {
 				return $this->_parseEchoIf($matches[2], strpos($matches[1], ":escape") !== FALSE);
 				break;
 
+			case 'else':
+				return '<?php else: ?>';
+				break;
+
 			case 'foreach:':
 				$parts = explode(":", $matches[2]);
 				if(count($parts) < 3) return sprintf('<?php if(isset(%s)): foreach(%s as $%s): ?>', $this->_parseDotNotation($parts[0]), $this->_parseDotNotation($parts[0]), $parts[1]);
@@ -187,7 +191,7 @@ class Template {
 
 	public function parseTags($content)
 	{
-		return preg_replace_callback('/\{(\/if|if:echo:escape:|if:echo:|if:var:escape:|if:var:|if:|var:escape:|var:|echo:escape:|echo:|\/foreach|foreach:|template:|json:)([^\}]+)*\}/', "self::_parseTag", $content);
+		return preg_replace_callback('/\{(\/if|if:echo:escape:|if:echo:|if:var:escape:|if:var:|if:|else|var:escape:|var:|echo:escape:|echo:|\/foreach|foreach:|template:|json:)([^\}]+)*\}/', "self::_parseTag", $content);
 	}
 
 
@@ -245,7 +249,7 @@ class Template {
 		{
 			foreach($value as $key => &$val)
 			{
-				if(is_object($val)) $val = $this->_recursiveConvertObjectToArray((array) $val);
+				if(is_object($val) || is_array($val)) $val = $this->_recursiveConvertObjectToArray($val);
 			}
 		}
 
