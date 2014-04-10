@@ -606,6 +606,26 @@ class Query {
 	}
 
 
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function prepare($sql)
+	{
+		$this->_db->prepare($sql);
+
+		return $this;
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function execute($data)
+	{
+		return $this->_db->execute($data);
+	}
+
+
 }
 
 /* End of file Query.php */
