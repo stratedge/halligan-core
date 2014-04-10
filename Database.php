@@ -8,6 +8,7 @@ class Database {
 
 	protected static $_conns = array();
 	protected static $_current;
+	protected static $_statement;
 
 
 	//---------------------------------------------------------------------------------------------
@@ -94,6 +95,31 @@ class Database {
 	public function getError()
 	{
 		return $this->connect()->errorInfo();
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function prepare($sql)
+	{
+		self::$_statement = $this->connect()->prepare($sql);
+
+		return TRUE;
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function execute($data)
+	{
+		if(!is_null(self::$_statement)) $result = self::$_statement->execute($data);
+
+		//Something failed, find out what
+		if($result === FALSE) throw new DatabaseException($this->getError(), 1);
+
+		return new QueryResult($result, $this->connect()->lastInsertId());
 	}
 
 }
