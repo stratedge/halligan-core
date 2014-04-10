@@ -172,17 +172,41 @@ if(function_exists("array_get") === FALSE)
 //---------------------------------------------------------------------------------------------
 
 
+if(function_exists("array_set") === FALSE)
+{
+	function array_set(&$array, $key, $value)
+	{
+		$parts = explode(".", $key);
+
+		$ref = &$array;
+
+		while($part = array_shift($parts))
+		{
+			if(!isset($ref[$part]) || !is_array($ref[$part]))
+			{
+				$ref[$part] = array();
+			}
+
+			$ref = &$ref[$part];
+		}
+
+		$ref = $value;
+
+		return $array;
+	}
+}
+
+
+//---------------------------------------------------------------------------------------------
+
+
 if(function_exists("redirect") === FALSE)
 {
 	function redirect($uri, $code = 302)
 	{
 		if(strpos($uri, 'http://') !== 0 && strpos($uri, 'https://') !== 0)
 		{
-			$url = str_replace($_SERVER['SCRIPT_URL'], "", $_SERVER['SCRIPT_URI']);
-
-			if(strpos($uri, "/") !== 0) $uri = "/" . $uri;
-
-			$uri = $url . $uri;
+			$url = siteURL($uri);
 		}
 
 		header('Location: ' . $uri, TRUE, $code);
@@ -209,6 +233,26 @@ if(function_exists("is_int_val") === FALSE)
 		}
 
 		return FALSE;
+	}
+}
+
+
+//---------------------------------------------------------------------------------------------
+
+
+if(function_exists("siteURL") === FALSE)
+{
+	function siteURL($uri = NULL)
+	{
+		$protocol = stripos($_SERVER["SERVER_PROTOCOL"], "https") === FALSE ? "http://" : "https://";
+		$domain = $_SERVER["HTTP_HOST"];
+
+		if(!is_null($uri))
+		{
+			if(strpos($uri, '/') !== 0) $uri = '/' . $uri;
+		}
+
+		return $protocol . $domain . $uri;
 	}
 }
 
