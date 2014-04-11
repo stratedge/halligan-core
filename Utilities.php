@@ -222,7 +222,7 @@ if(function_exists("is_int_val") === FALSE)
 {
 	function is_int_val($val, $greater_than_zero = FALSE)
 	{
-		if(is_numeric($val) && (is_int($val) || ctype_digit($val))
+		if(is_numeric($val) && (is_int($val) || ctype_digit($val)))
 		{
 			if($greater_than_zero)
 			{
