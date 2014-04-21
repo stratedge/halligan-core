@@ -22,6 +22,10 @@ class Factory {
 
 		$rc = new ReflectionClass($class);
 
+		$config = Config::get("Factory", $class);
+
+		if(isset($config["params"])) $params = $params + (array) $config["params"];
+
 		return $rc->newInstanceArgs((array) $params);
 	}
 
