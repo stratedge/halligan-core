@@ -97,7 +97,7 @@ class Autoloader {
 			{
 				require_once $path;
 				$namespace = resolve_namespace_class($path, $class);
-				class_alias($namespace, $class);
+				if(!class_exists($class, TRUE)) class_alias($namespace, $class);
 				return TRUE;
 			}
 		}
