@@ -99,7 +99,8 @@ class URI {
 
 	public static function getRequestMethod($to_lowercase = FALSE)
 	{
-		return $to_lowercase ? strtolower($_SERVER["REQUEST_METHOD"]) : $_SERVER["REQUEST_METHOD"];
+		$method = static::isCLI() ? "GET" : $_SERVER["REQUEST_METHOD"];
+		return $to_lowercase ? strtolower($method) : $method;
 	}
 
 }
