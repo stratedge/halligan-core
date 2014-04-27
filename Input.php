@@ -103,6 +103,28 @@ class Input {
 
 		return NULL;
 	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function setGet($key, $value)
+	{
+		$_GET[$key] = $value;
+
+		return TRUE;
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function setPost($key, $value)
+	{
+		$_POST[$key] = $value;
+
+		return TRUE;
+	}
 }
 
 /* End of file Input.php */
