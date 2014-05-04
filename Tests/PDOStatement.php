@@ -15,7 +15,7 @@ class PDOStatement_Stub extends \PDOStatement {
 	{
 		if(self::$throw_exception)
 		{
-			throw new DatabaseException(array());
+			throw new DatabaseException(array("CODE", 123, "Database Exception"));
 		}
 
 		return $this;
