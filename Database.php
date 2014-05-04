@@ -83,7 +83,7 @@ class Database {
 		$result = $this->connect()->query($sql);
 
 		//Something failed, find out what
-		if($result === FALSE) throw new DatabaseException($this->getError(), 1);
+		if($result === FALSE) throw new DatabaseException($this->getError());
 
 		return new QueryResult($result, $this->connect()->lastInsertId());
 	}
