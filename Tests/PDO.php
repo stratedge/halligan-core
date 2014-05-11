@@ -15,6 +15,7 @@ class PDO_Stub extends \PDO {
 	{
 		return "'" . $sql . "'";
 	}
+	
 }
 
 /* End of file PDO.php */
