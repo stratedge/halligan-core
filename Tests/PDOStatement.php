@@ -76,7 +76,7 @@ class PDOStatement_Stub extends \PDOStatement {
 		if(count($result))
 		{
 			//Grab the first available row for the result
-			$val = array_shift($result);
+			$val = (array) array_shift($result);
 
 			//Set the most current result to no longer include the row we just grabbed
 			self::$results[0] = $result;
