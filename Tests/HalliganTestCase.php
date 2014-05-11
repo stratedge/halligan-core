@@ -11,6 +11,7 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 	const INPUT_CLASS_INT_GTZ		=	"InputClassIntGtz";
 	const INPUT_CLASS_INT_VAL_GTZ	=	"InputClassIntValGtz";
 	const INPUT_CLASS_ARRAY			=	"InputClassArray";
+	const INPUT_CLASS_NUMERIC		=	"InputClassNumeric";
 
 
 	//---------------------------------------------------------------------------------------------
@@ -129,6 +130,10 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 			case self::INPUT_CLASS_ARRAY:
 				$this->subInput(array(), array(1), array("1"), array("test" => "value"), array(array()), array((object) array()));
 				break;
+
+			case self::INPUT_CLASS_NUMERIC:
+				foreach($this->inputs as $input) { if(is_numeric($input)) $this->subInput($input); }
+				break;
 		}
 	}
 
@@ -180,6 +185,15 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 	public function subInputArray()
 	{
 		$this->subInputClass(self::INPUT_CLASS_ARRAY);
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function subInputNumeric()
+	{
+		$this->subInputClass(self::INPUT_CLASS_NUMERIC);
 	}
 
 
