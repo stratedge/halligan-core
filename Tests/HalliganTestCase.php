@@ -71,6 +71,21 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 	//---------------------------------------------------------------------------------------------
 	
 
+	public function addInput(/* polymorphic */)
+	{
+		foreach(func_get_args() as $input)
+		{
+			$this->input_modifiers[] = (object) array(
+				"type" => "add",
+				"value" => $input
+			);
+		}
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
 	public function subInput(/* polymorphic */)
 	{
 		foreach(func_get_args() as $input)
@@ -183,6 +198,10 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 				case "sub":
 					$this->removeInputValue($tmp, $mod->value);
 					break;
+
+				case "add":
+					$this->addInputValue($tmp, $mod->value);
+					break;
 			}
 		}
 
@@ -196,6 +215,15 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 	public function removeInputValue(&$tmp, $value)
 	{
 		$tmp = array_filter($tmp, function($val) use ($value) { return $val !== $value; });
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function addInputValue(&$tmp, $value)
+	{
+		$tmp[] = $value;
 	}
 
 }
