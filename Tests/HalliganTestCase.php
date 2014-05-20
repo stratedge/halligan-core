@@ -128,7 +128,7 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 				break;
 
 			case self::INPUT_CLASS_ARRAY:
-				$this->subInput(array(), array(1), array("1"), array("test" => "value"), array(array()), array((object) array()));
+				foreach($this->inputs as $input) { if(is_array($input)) $this->subInput($input); }
 				break;
 
 			case self::INPUT_CLASS_NUMERIC:
