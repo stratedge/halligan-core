@@ -5,6 +5,7 @@ namespace Halligan;
 class URI {
 
 	public static $segments = array();
+	public static $arguments = array();
 
 
 	//---------------------------------------------------------------------------------------------
@@ -15,7 +16,25 @@ class URI {
 		//Get the correct URI based on the URL or the CLI appropriately
 		if(self::isCLI())
 		{
-			$uri = implode("/", array_slice($_SERVER['argv'], 1));
+			$uri_parts = array();
+			$args = array();
+
+			foreach($_SERVER['argv'] as $arg)
+			{
+				if(strpos($arg, "-") === 0 || strpos($arg, "--") === 0)
+				{
+					preg_match('/^-{1,2}(\w*)=?"?(.*)"?/', $arg, $matches);
+					$args[$matches[1]] = $matches[2];
+				}
+				else
+				{
+					$uri_parts[] = $arg;
+				}
+			}
+
+			Console::setArguments($args);
+
+			$uri = implode("/", array_slice($uri_parts, 1));
 		}
 		else
 		{
