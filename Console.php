@@ -4,6 +4,12 @@ namespace Halligan;
 
 class Console {
 
+	public static $arguments = array();
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
 	public static function write($msg = "")
 	{
 		fputs(STDOUT, $msg);
@@ -22,9 +28,41 @@ class Console {
 	//---------------------------------------------------------------------------------------------
 	
 
-	public static function clear()
+	public static function setArguments($arguments = array())
 	{
-		shell_exec("clear");
+		static::$arguments = $arguments;
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function hasArgument($argument)
+	{
+		return isset(static::$arguments[$argument]);
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function getArgument($argument)
+	{
+		return static::hasArgument($argument) ? static::$arguments[$argument] : FALSE;
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function getFirstArgument($args = array())
+	{
+		foreach($args as $arg)
+		{
+			if(static::hasArgument($arg)) return getArgument($arg);
+		}
+
+		return FALSE;
 	}
 
 
@@ -85,6 +123,37 @@ class Console {
 
 			self::writeLine($str);
 		}
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function writeHelpMenu($usage = NULL, $options = array())
+	{
+		if(is_string($usage))
+		{
+			Console::writeLine($usage);
+			Console::writeLine();
+		}
+
+		$count = 0;
+
+		foreach(array_keys($options) as $key)
+		{
+			if(strlen($key) > $count) $count = strlen($key);
+		}
+
+		foreach($options as $key => $value)
+		{
+			// $add = $count - strlen($key);
+			$key = str_pad($key, $count);
+			Console::writeLine("  $key $value");
+		}
+
+		Console::writeLine();
+		
+		exit;
 	}
 
 }
