@@ -8,7 +8,8 @@ class Template {
 	protected $_data = array();
 
 	protected $_if_functions = array(
-		'isset'
+		'isset',
+		'empty'
 	);
 
 
