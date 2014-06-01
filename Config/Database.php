@@ -5,9 +5,10 @@ $database['connections'] = array(
 		'host'		=> 'localhost',
 		'username'	=> '',
 		'password'	=> '',
-		'database'	=> '',
+		'dbname'	=> '',
 		'port'		=> '',
-		'socket'	=> ''
+		'socket'	=> '',
+		'charset'	=> ''
 	)
 );
 

@@ -57,12 +57,18 @@ class Database {
 	{
 		$params = Config::get('Database', "connections.$conn");
 
-		$host = isset($params['host']) && !empty($params['host']) ? sprintf("host=%s;", $params['host']) : NULL;
-		$dbname = isset($params['database']) && !empty($params['database']) ? sprintf("dbname=%s;", $params['database']) : NULL;
-		$port = isset($params['port']) && !empty($params['port']) ? sprintf("port=%s;", $params['port']) : NULL;
+		$host_parts = array();
+
+		foreach(array("host", "dbname", "port", "charset") as $part)
+		{
+			if(!empty($params[$part]))
+			{
+				$host_parts[] = sprintf("%s=%s", $part, $params[$part]);
+			}
+		}
 
 		return array(
-			'host' => "mysql:" . $host . $dbname . $port,
+			'host' => sprintf("mysql:%s;", implode(";", $host_parts)),
 			'username' => $params['username'],
 			'password' => $params['password']
 		);
