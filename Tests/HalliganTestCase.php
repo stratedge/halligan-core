@@ -5,14 +5,15 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 	protected $inputs = array();
 	protected $input_modifiers = array();
 
-	const INPUT_CLASS_BOOL			=	"InputClassBool";
-	const INPUT_CLASS_INT			=	"InputClassInt";
-	const INPUT_CLASS_INT_VAL		=	"InputClassIntVal";
-	const INPUT_CLASS_INT_GTZ		=	"InputClassIntGtz";
-	const INPUT_CLASS_INT_VAL_GTZ	=	"InputClassIntValGtz";
-	const INPUT_CLASS_ARRAY			=	"InputClassArray";
-	const INPUT_CLASS_NUMERIC		=	"InputClassNumeric";
-	const INPUT_CLASS_STRING		=	"InputClassString";
+	const INPUT_CLASS_BOOL				=	"InputClassBool";
+	const INPUT_CLASS_INT				=	"InputClassInt";
+	const INPUT_CLASS_INT_VAL			=	"InputClassIntVal";
+	const INPUT_CLASS_INT_GTZ			=	"InputClassIntGtz";
+	const INPUT_CLASS_INT_VAL_GTZ		=	"InputClassIntValGtz";
+	const INPUT_CLASS_ARRAY				=	"InputClassArray";
+	const INPUT_CLASS_NUMERIC			=	"InputClassNumeric";
+	const INPUT_CLASS_NUMERIC_VAL_GTZ	=	"InputClassNumericValGtz";
+	const INPUT_CLASS_STRING			=	"InputClassString";
 
 
 	//---------------------------------------------------------------------------------------------
@@ -136,6 +137,10 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 				foreach($this->inputs as $input) { if(is_numeric($input)) $this->subInput($input); }
 				break;
 
+			case self::INPUT_CLASS_NUMERIC_VAL_GTZ:
+				foreach($this->inputs as $input) { if(is_numeric($input) && $input > 0) $this->subInput($input); }
+				break;
+
 			case self::INPUT_CLASS_STRING:
 				foreach($this->inputs as $input) { if(is_string($input)) $this->subInput($input); }
 				break;
@@ -196,9 +201,16 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 	//---------------------------------------------------------------------------------------------
 	
 
-	public function subInputNumeric()
+	public function subInputNumeric($greater_than_zero = FALSE)
 	{
-		$this->subInputClass(self::INPUT_CLASS_NUMERIC);
+		if($greater_than_zero)
+		{
+			$this->subInputClass(self::INPUT_CLASS_NUMERIC_VAL_GTZ);			
+		}
+		else
+		{
+			$this->subInputClass(self::INPUT_CLASS_NUMERIC);
+		}
 	}
 
 

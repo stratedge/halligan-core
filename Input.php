@@ -38,7 +38,7 @@ class Input {
 	{
 		if(isset($_GET[$key]) && (!empty($_GET[$key]) || $_GET[$key] === "0"))
 		{
-			return $trim ? trim($_GET[$key]) : $_GET[$key];
+			return $trim && is_string($_GET[$key]) ? trim($_GET[$key]) : $_GET[$key];
 		}
 
 		return NULL;
