@@ -13,7 +13,7 @@ class PDO_Stub extends \PDO {
 
 	function quote($sql, $paramtype = NULL)
 	{
-		return "'" . $sql . "'";
+		return "'" . str_replace("'", "''", $sql) . "'";
 	}
 	
 }

@@ -14,6 +14,7 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 	const INPUT_CLASS_NUMERIC			=	"InputClassNumeric";
 	const INPUT_CLASS_NUMERIC_VAL_GTZ	=	"InputClassNumericValGtz";
 	const INPUT_CLASS_STRING			=	"InputClassString";
+	const INPUT_CLASS_EMPTY				=	"InputClassEmpty";
 
 
 	//---------------------------------------------------------------------------------------------
@@ -144,6 +145,10 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 			case self::INPUT_CLASS_STRING:
 				foreach($this->inputs as $input) { if(is_string($input)) $this->subInput($input); }
 				break;
+
+			case self::INPUT_CLASS_EMPTY:
+				foreach($this->inputs as $input) { if(empty($input)) $this->subInput($input); }
+				break;
 		}
 	}
 
@@ -220,6 +225,15 @@ class HalliganTestCase extends PHPUnit_Framework_TestCase {
 	public function subInputString()
 	{
 		$this->subInputClass(self::INPUT_CLASS_STRING);
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function subInputEmpty()
+	{
+		$this->subInputClass(self::INPUT_CLASS_EMPTY);
 	}
 
 
