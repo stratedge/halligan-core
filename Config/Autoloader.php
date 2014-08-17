@@ -8,7 +8,8 @@ $autoloader['paths'] = array(
 	"Service",
 	"Controller",
 	"Component",
-	"Exception"
+	"Exception",
+	"Vendor"
 );
 
 /* End of file Autoloader.php */
