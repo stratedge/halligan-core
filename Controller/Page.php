@@ -8,6 +8,9 @@ class Page extends Controller {
 	protected $_global = array();
 	protected $_layout  = NULL;
 
+	const CONTENT_TYPE_COMPONENT	=	"Component";
+	const CONTENT_TYPE_STATIC		=	"Static";
+
 
 	//---------------------------------------------------------------------------------------------
 	
@@ -23,7 +26,27 @@ class Page extends Controller {
 
 	public function addComponent($class, $section, Array $options = array())
 	{
-		$data = array_merge($options, array('class' => $class, 'section' => $section));
+		$data = array_merge($options, array(
+			"type" => self::CONTENT_TYPE_COMPONENT,
+			"class" => $class,
+			"section" => $section
+		));
+
+		return ($this->_components[] = (object) $data);
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function addStatic($content, $section)
+	{
+		$data = array(
+			"type" => self::CONTENT_TYPE_STATIC,
+			"content" => $content,
+			"section" => $section
+		);
+
 		return ($this->_components[] = (object) $data);
 	}
 
@@ -45,18 +68,27 @@ class Page extends Controller {
 
 		foreach($this->_components as $component)
 		{
-			if(!isset($component->class) || empty($component->class)) continue;
-			if(!isset($component->section) || empty($component->section)) continue;
+			switch($component->type)
+			{
+				case self::CONTENT_TYPE_STATIC:
+					$layout->addContentToSection($component->content, $component->section);
+					break;
 
-			$method = isset($component->method) && !empty($component->method) ? $component->method : Config::get('Component', 'default_method');
+				case self::CONTENT_TYPE_COMPONENT:
+					if(!isset($component->class) || empty($component->class)) continue;
+					if(!isset($component->section) || empty($component->section)) continue;
 
-			$params = (!isset($component->params) || empty($component->params) || !is_array($component->params)) ? array() : $component->params;
+					$method = isset($component->method) && !empty($component->method) ? $component->method : Config::get('Component', 'default_method');
 
-			$class = new $component->class($this->_global);
+					$params = (!isset($component->params) || empty($component->params) || !is_array($component->params)) ? array() : $component->params;
 
-			if(!method_exists($class, $method)) continue;
+					$class = new $component->class($this->_global);
 
-			$layout->addContentToSection(call_user_func_array(array($class, $method), $params), $component->section);
+					if(!method_exists($class, $method)) continue;
+
+					$layout->addContentToSection(call_user_func_array(array($class, $method), $params), $component->section);
+					break;
+			}
 		}
 
 		Response::setOutput($layout->build());

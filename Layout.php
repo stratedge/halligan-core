@@ -2,8 +2,6 @@
 
 namespace Halligan;
 
-use \Template;
-
 class Layout {
 
 	protected $_layout = NULL;
@@ -136,7 +134,7 @@ class Layout {
 			$contents = file_get_contents($path);
 
 			//Parse template tags
-			$t = new Template();
+			$t = Factory::create("Template");
 			$contents = $t->parseTags($contents);
 			unset($t);
 
@@ -180,7 +178,7 @@ class Layout {
 
 	protected function _parseTemplate($template)
 	{
-		$tpl = new Template();
+		$tpl = Factory::create("Template");
 		
 		$tpl->setTemplate($template);
 		
