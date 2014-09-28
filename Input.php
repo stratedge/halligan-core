@@ -4,6 +4,32 @@ namespace Halligan;
 
 class Input {
 
+	const METHOD_GET	=	"GET";
+	const METHOD_POST	=	"POST";
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function getMethod()
+	{
+		switch(strtoupper($_SERVER["REQUEST_METHOD"]))
+		{
+			case self::METHOD_POST:
+				return self::METHOD_POST;
+				break;
+
+			default:
+			case self::METHOD_GET:
+				return self::METHOD_GET;
+				break;
+		}
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
 	public static function post($key, $trim = TRUE)
 	{
 		if(isset($_POST[$key]) && (!empty($_POST[$key]) || $_POST[$key] === "0"))
