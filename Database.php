@@ -125,7 +125,7 @@ class Database {
 		//Something failed, find out what
 		if($result === FALSE) throw new DatabaseException($this->getError(), 1);
 
-		return new QueryResult($result, $this->connect()->lastInsertId());
+		return new QueryResult(self::$_statement, $this->connect()->lastInsertId());
 	}
 
 }
