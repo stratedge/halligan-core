@@ -123,7 +123,7 @@ class Database {
 		if(!is_null(self::$_statement)) $result = self::$_statement->execute($data);
 
 		//Something failed, find out what
-		if($result === FALSE) throw new DatabaseException($this->getError(), 1);
+		if($result === FALSE) throw new DatabaseException(self::$_statement->errorInfo(), 1);
 
 		return new QueryResult(self::$_statement, $this->connect()->lastInsertId());
 	}
