@@ -118,7 +118,7 @@ class Database {
 	//---------------------------------------------------------------------------------------------
 	
 
-	public function execute($data)
+	public function execute($data = array())
 	{
 		if(!is_null(self::$_statement)) $result = self::$_statement->execute($data);
 
