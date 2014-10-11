@@ -620,7 +620,7 @@ class Query {
 	//---------------------------------------------------------------------------------------------
 	
 
-	public function execute($data)
+	public function execute($data = array())
 	{
 		return $this->_db->execute($data);
 	}
