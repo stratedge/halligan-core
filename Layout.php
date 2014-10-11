@@ -77,15 +77,31 @@ class Layout {
 		//No file found? Exit gracefully
 		if($path === FALSE) return FALSE;
 
-		//Get the compiled layout's path
-		$compiled_layout = $this->_compileLayout($path);
+		switch(Config::get("Layout", "compile_layouts", TRUE))
+		{
+			case TRUE:
+			default:
+				return $this->buildFromCompilation($path);
+
+			case FALSE:
+				return $this->buildFromParsing($path);
+		}		
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function buildFromCompilation($path)
+	{
+		$compiled_layout_path = $this->_compileLayout($path);
 
 		//Begin output buffering
 		ob_start();
 		
 		extract($this->_global);
 
-		include($compiled_layout);
+		include($compiled_layout_path);
 
 		$layout = ob_get_clean();
 
@@ -94,6 +110,29 @@ class Layout {
 		$layout = str_replace('{memory-usage}', round(memory_get_peak_usage() / 1024 / 1024, 2), $layout);
 
 		return $layout;
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function buildFromParsing($path)
+	{
+		//Get parsed layout
+		$contents = file_get_contents($path);
+		$layout = $this->parseTags($contents);
+
+		//Start output buffermg
+		ob_start();
+
+		//Before we include the compiled layout, make the data availabe as PHP variables
+		extract($this->_global);
+
+		//Include the layout file
+		eval($layout);
+		
+		//Return the buffered output
+		return ob_get_clean();
 	}
 
 
@@ -126,6 +165,13 @@ class Layout {
 
 	protected function _compileLayout($path)
 	{
+		//Do we have a cache folder?
+		if(!$this->haveCacheFolder())
+		{
+			//Create the cache folder
+			mkdir($this->getCacheFolderPath(), 0777, TRUE);
+		}
+
 		$compiled_path = $this->_getCompiledLayoutPath($path);
 
 		//Is the layout not yet compiled or out of date?
@@ -149,9 +195,27 @@ class Layout {
 	//---------------------------------------------------------------------------------------------
 	
 
+	public function haveCacheFolder()
+	{
+		return realpath($this->getCacheFolderPath()) !== FALSE;
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function getCacheFolderPath()
+	{
+		return path("app") . "_cache" . DS . "layout";
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
 	protected function _getCompiledLayoutPath($path)
 	{
-		return path('app') . 'Cache/layout' . DS . md5($path) . EXT;
+		return $this->getCacheFolderPath() . DS . md5($path) . EXT;
 	}
 
 

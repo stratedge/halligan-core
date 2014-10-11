@@ -49,7 +49,9 @@ class Template {
 		if(!is_string($map) || is_numeric($map)) return FALSE;
 
 		//Set the specified key in the data array to the passed value
-		return ($this->_data[$map] = $this->_recursiveConvertObjectToArray($value));
+		$this->_data[$map] = $this->_recursiveConvertObjectToArray($value);
+
+		return $this;
 	}
 
 
@@ -66,8 +68,49 @@ class Template {
 		//No file found, exit gracefully (for now)
 		if($path === FALSE) return FALSE;
 
+		//Process template depending on if compiling is on or off
+		switch(Config::get("Template", "compile_templates", TRUE))
+		{
+			case TRUE:
+			default:
+				return $this->buildFromCompilation($path);
+
+			case FALSE:
+				return $this->buildFromParsing($path);
+		}	
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function buildFromCompilation($path)
+	{
 		//Get the compiled template's path
-		$compiled_template = $this->_compileTemplate($path);
+		$compiled_template_path = $this->_compileTemplate($path);
+		
+		//Start output buffermg
+		ob_start();
+
+		//Before we include the compiled template, make the data availabe as PHP variables
+		extract($this->_data);
+
+		//Include the template file
+		include($compiled_template_path);
+		
+		//Return the buffered output
+		return ob_get_clean();
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function buildFromParsing($path)
+	{
+		//Get parsed template
+		$contents = file_get_contents($path);
+		$template = $this->parseTags($contents);
 
 		//Start output buffermg
 		ob_start();
@@ -76,7 +119,7 @@ class Template {
 		extract($this->_data);
 
 		//Include the template file
-		include($compiled_template);
+		eval($template);
 		
 		//Return the buffered output
 		return ob_get_clean();
@@ -173,6 +216,13 @@ class Template {
 
 	protected function _compileTemplate($path)
 	{
+		//Do we have a cache folder?
+		if(!$this->haveCacheFolder())
+		{
+			//Create the cache folder
+			mkdir($this->getCacheFolderPath(), 0777, TRUE);
+		}
+
 		$compiled_path = $this->_getCompiledTemplatePath($path);
 
 		//Is the template not yet compiled or out of date?
@@ -190,6 +240,24 @@ class Template {
 	//---------------------------------------------------------------------------------------------
 	
 
+	public function haveCacheFolder()
+	{
+		return realpath($this->getCacheFolderPath()) !== FALSE;
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public function getCacheFolderPath()
+	{
+		return path("app") . "_cache" . DS . "template";
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
 	public function parseTags($content)
 	{
 		return preg_replace_callback('/\{(\/if|if:echo:escape:|if:echo:|if:var:escape:|if:var:|if:|else|var:escape:|var:|echo:escape:|echo:|\/foreach|foreach:|template:|json:)([^\}]+)*\}/', "self::_parseTag", $content);
@@ -201,7 +269,7 @@ class Template {
 
 	protected function _getCompiledTemplatePath($path)
 	{
-		return path('app') . 'Cache/template' . DS . md5($path) . EXT;
+		return $this->getCacheFolderPath() . DS . md5($path) . EXT;
 	}
 
 
