@@ -186,6 +186,7 @@ class Layout {
 
 			$layout = preg_replace_callback('/\{(section:|template:)([^\}]+)*\}/', array($this, '_parseTag'), $contents);
 			file_put_contents($compiled_path, $layout);
+			chmod($compiled_path, 0777);
 		}
 
 		return $compiled_path;

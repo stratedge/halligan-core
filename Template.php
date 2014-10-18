@@ -231,6 +231,7 @@ class Template {
 			$contents = file_get_contents($path);
 			$template = $this->parseTags($contents);
 			file_put_contents($compiled_path, $template);
+			chmod($compiled_path, 0777);
 		}
 
 		return $compiled_path;
