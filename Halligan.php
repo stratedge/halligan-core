@@ -193,6 +193,11 @@ unset($last_path, $autoloader);
 
 
 /**
+ * Load all potential composer (or otherwise) autoload files in the vendor folder
+ */
+load_file_from_all_paths('Vendor/autoload.php', TRUE);
+
+/**
  * Build the response
  */
 ob_start();
