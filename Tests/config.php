@@ -4,6 +4,7 @@ require realpath(__DIR__ . '/../Config/Paths.php');
 
 chdir(__DIR__ . "/../..");
 
+$halligan_test_path = "Halligan/Tests";
 
 //error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
@@ -63,9 +64,12 @@ unset($paths);
  * @param	string	$key	The key of the $paths array corresponding to the value being requested
  * @return	string			The full path to the directory
  */
-function path($path)
+if(!function_exists("path"))
 {
-	return $GLOBALS['halligan_paths'][$path];
+	function path($path)
+	{
+		return $GLOBALS['halligan_paths'][$path];
+	}
 }
 
 
@@ -76,9 +80,12 @@ function path($path)
  * @param	string	$path	The path to save to the specified key in the global paths array
  * @return	boolean			Whether or not the path was set succesfully to the global paths array
  */
-function set_path($key, $path)
+if(!function_exists("set_path"))
 {
-	return ($GLOBALS['halligan_paths'][$key] = $path);
+	function set_path($key, $path)
+	{
+		return ($GLOBALS['halligan_paths'][$key] = $path);
+	}
 }
 
 
@@ -88,10 +95,13 @@ function set_path($key, $path)
  * @param	boolean	$backwards	Whether or not to move through the paths backwards
  * @return	array				An array of paths, sorted ascending or descending as specified
  */
-function get_all_paths_ordered($backwards = FALSE)
+if(!function_exists("get_all_paths_ordered"))
 {
-	$paths = array_merge((array) path('app'), path('runcard'), (array) path('sys'));
-	return $backwards ? array_reverse($paths) : $paths;
+	function get_all_paths_ordered($backwards = FALSE)
+	{
+		$paths = array_merge((array) path('app'), path('runcard'), (array) path('sys'));
+		return $backwards ? array_reverse($paths) : $paths;
+	}
 }
 
 
@@ -104,21 +114,24 @@ function get_all_paths_ordered($backwards = FALSE)
  * @param	boolean	$backwards	FALSE (default) to begin with the app path, TRUE to begin with the system path
  * @return	mixed				FALSE if no file is ever loaded, otherwise the path to the last loaded file
  */
-function load_file_from_all_paths($file, $backwards = FALSE)
+if(!function_exists("load_file_from_all_paths"))
 {
-	$last_path = FALSE;
-
-	foreach(get_all_paths_ordered($backwards) as $path)
+	function load_file_from_all_paths($file, $backwards = FALSE)
 	{
-		$path = realpath($path . $file);
-		if($path !== FALSE)
-		{
-			require_once $path;
-			$last_path = $path;
-		}
-	}
+		$last_path = FALSE;
 
-	return $last_path;
+		foreach(get_all_paths_ordered($backwards) as $path)
+		{
+			$path = realpath($path . $file);
+			if($path !== FALSE)
+			{
+				require_once $path;
+				$last_path = $path;
+			}
+		}
+
+		return $last_path;
+	}
 }
 
 
@@ -159,7 +172,7 @@ spl_autoload_register(array($autoloader, 'load'));
 
 unset($last_path, $autoloader);
 
-// require __DIR__ . "/PDO.php";
-// require __DIR__ . "/PDOStatement.php";
-// require __DIR__ . "/Database.php";
-require __DIR__ . "/HalliganTestCase.php";
+require $halligan_test_path . "/PDO.php";
+require $halligan_test_path . "/PDOStatement.php";
+require $halligan_test_path . "/Database.php";
+require $halligan_test_path . "/HalliganTestCase.php";
