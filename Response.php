@@ -3,6 +3,8 @@
 namespace Halligan;
 
 use ReflectionMethod;
+use \URI;
+use \Autoloader;
 
 class Response {
 
