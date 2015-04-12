@@ -16,7 +16,7 @@ class Config {
 	{
 		if(in_array($config, static::$configs_loaded)) return TRUE;
 
-		static::$config_options[$config] = array();
+		static::$config_options[strtolower($config)] = array();
 
 		foreach(get_all_paths_ordered(TRUE) as $path)
 		{
@@ -60,6 +60,36 @@ class Config {
 		if(!isset(static::$config_options[strtolower($class)])) return $default;
 
 		return array_get(static::$config_options[strtolower($class)], $property, $default);
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function reset()
+	{
+		static::$configs_loaded = array();
+		static::$config_options = array();
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function set($class, $property, $value)
+	{
+		self::loadConfig($class);
+		array_set(static::$config_options[strtolower($class)], $property, $value);
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function remove($class, $property)
+	{
+		self::loadConfig($class);
+		array_unset(static::$config_options[strtolower($class)], $property);
 	}
 }
 

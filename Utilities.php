@@ -200,6 +200,38 @@ if(function_exists("array_set") === FALSE)
 //---------------------------------------------------------------------------------------------
 
 
+if(function_exists("array_unset") === FALSE)
+{
+	function array_unset(&$array, $key)
+	{
+		$ref = &$array;
+
+		$parts = explode(".", $key);
+		$key = end($parts);
+
+		foreach($parts as $k)
+		{
+			if(!isset($ref[$k])) return;
+
+			if($k == $key)
+			{
+				//Found the final key, remove it
+				unset($ref[$key]);
+				return;
+			}
+			else
+			{
+				//Not the end yet, keep going
+				$ref = &$ref[$k];
+			}
+		}
+	}
+}
+
+
+//---------------------------------------------------------------------------------------------
+
+
 if(function_exists("redirect") === FALSE)
 {
 	function redirect($uri, $code = 302)
