@@ -4,7 +4,7 @@ if(function_exists("dump") === FALSE)
 {
 	function dump($data)
 	{
-		ob_end_clean();
+		@ob_end_clean();
 	    ob_start();
 	    
 	    if(is_bool($data)) {
