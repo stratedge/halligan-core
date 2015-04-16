@@ -3,11 +3,13 @@
 namespace Halligan;
 
 use ReflectionClass;
+use \Halligan\Config;
 
 class Factory {
 
 	protected static $_registered_objs = array();
 	protected static $_registered_locs = array();
+	protected static $_registered_alts = array();
 
 	//---------------------------------------------------------------------------------------------
 
@@ -18,6 +20,11 @@ class Factory {
 		if(isset(self::$_registered_locs[$class]) && !empty(self::$_registered_locs[$class]))
 		{
 			require_once(self::$_registered_locs[$class]);
+		}
+
+		if(!empty(self::$_registered_alts[$class]))
+		{
+			$class = self::$_registered_alts[$class];
 		}
 
 		$rc = new ReflectionClass($class);
@@ -46,6 +53,7 @@ class Factory {
 	{
 		self::$_registered_locs = array();
 		self::$_registered_objs = array();
+		self::$_registered_alts = array();
 	}
 
 
@@ -55,6 +63,15 @@ class Factory {
 	public static function registerMock($class, $mock_obj)
 	{
 		if(is_object($mock_obj)) self::$_registered_objs[$class] = $mock_obj;
+	}
+
+
+	//---------------------------------------------------------------------------------------------
+	
+
+	public static function registerAlternative($class, $alt_class)
+	{
+		self::$_registered_alts[$class] = $alt_class;
 	}
 
 
